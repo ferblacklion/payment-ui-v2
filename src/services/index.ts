@@ -27,18 +27,24 @@ export async function saveImage(file: File): Promise<SaveImage | null> {
   }
 }
 
-export async function savePayment(data: Partial<Payment>): Promise<{
+export async function savePayment(
+  data: Partial<Payment>,
+  file?: File,
+): Promise<{
   id: string;
   success: boolean;
 } | null> {
   try {
+    const formData = new FormData();
+    formData.append('name', data.name || '');
+    formData.append('person', data.person || '');
+    if (file) formData.append('file', file);
     return await fetch(`${API_URL}/payment`, {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json',
         Authorization: 'Bearer 1234',
       },
-      body: JSON.stringify(data),
+      body: formData,
     }).then((r) => r.json());
   } catch (error) {
     console.log('savePayment', error);

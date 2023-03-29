@@ -26,7 +26,8 @@ import toDate from 'date-fns/toDate';
 import format from 'date-fns/format';
 import { API_URL, DEFAULT_PAYMENTS, DEFAULT_PERSONS } from './constants';
 import { Payment } from './types';
-import { saveImage, savePayment, updatePayment } from './services';
+import { savePayment } from './services';
+import { useToast } from '@chakra-ui/react';
 
 function cleanName(value: string) {
   return value.toLowerCase().replace(' ', '-');
@@ -37,6 +38,7 @@ function App() {
   const [person, setPerson] = useState('');
   const [file, setFile] = useState<File>();
   const [isSaved, setIsSaved] = useState(false);
+  const toast = useToast();
 
   const { data: paymentData, mutate } = useSWR<Payment[]>(`${API_URL}/payment`);
 
@@ -47,26 +49,25 @@ function App() {
   };
 
   const onSave = async () => {
-    if (!payment || !person) return;
+    if (!payment || !person) {
+      toast({
+        title: 'Error!',
+        description: 'Los datos no estan completos!',
+        status: 'error',
+        duration: 8000,
+        isClosable: true,
+      });
+      return;
+    }
     setIsSaved(true);
 
     try {
-      let image = null;
-      if (file) {
-        const imageResponse = await saveImage(file);
-        image = imageResponse?.image_url || null;
-      }
-
       const data = {
         name: payment,
         person: person,
       };
 
-      const paymentSaved = await savePayment(data);
-
-      if (image && paymentSaved?.id) {
-        await updatePayment(paymentSaved.id, image);
-      }
+      await savePayment(data, file);
 
       const newData = paymentData || [];
       const time = new Date().getTime();
@@ -74,12 +75,23 @@ function App() {
         ...data,
         id: time.toString(),
         datetime: time,
-        image,
+        image: null,
       };
       clearData();
       mutate([...newData, newItem]);
+      toast({
+        description: 'Guardado!',
+        status: 'success',
+        duration: 2000,
+        isClosable: true,
+      });
     } catch (error) {
-      alert('Error al enviar datos, intente luego');
+      toast({
+        description: 'Error al enviar datos, intente luego!',
+        status: 'error',
+        duration: 9800,
+        isClosable: true,
+      });
       console.log('savePayment: ', error);
     }
   };
@@ -100,7 +112,7 @@ function App() {
         textAlign="center"
       >
         <Heading color="lightcyan" as="h1" size="xl">
-          Nuevo Gasto
+          Gastos
         </Heading>
         <Card marginBottom="1">
           <CardBody>
@@ -166,7 +178,7 @@ function App() {
                     <Td>
                       {p.image ? (
                         <Link color="teal.500" isExternal href={p.image}>
-                          Link
+                          Image
                         </Link>
                       ) : (
                         'N/A'

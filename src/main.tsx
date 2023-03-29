@@ -3,13 +3,13 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { SWRConfig } from 'swr';
 import App from './App';
+import { fetcher } from './constants';
 
 const theme = extendTheme({
   initialColorMode: 'light',
   useSystemColorMode: false,
 });
 
-const fetcher = (url: string) => fetch(url).then((res) => res.json());
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   <React.StrictMode>
     <ChakraProvider theme={theme}>
