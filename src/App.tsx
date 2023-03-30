@@ -14,15 +14,17 @@ import {
 } from '@chakra-ui/react';
 import { ChangeEvent, useState } from 'react';
 import useSWR from 'swr';
-import { API_URL, DEFAULT_PAYMENTS, DEFAULT_PERSONS } from './constants';
+import {
+  API_URL,
+  API_URLS,
+  DEFAULT_PAYMENTS,
+  DEFAULT_PERSONS,
+} from './constants';
 import { Payment } from './types';
 import { savePayment } from './services';
 import { useToast } from '@chakra-ui/react';
 import { TablePayments } from './components/table-payments';
-
-function cleanName(value: string) {
-  return value.toLowerCase().replace(' ', '-');
-}
+import { cleanName } from './utils';
 
 function App() {
   const [payment, setPayment] = useState('');
@@ -31,7 +33,9 @@ function App() {
   const [isSaved, setIsSaved] = useState(false);
   const toast = useToast();
 
-  const { data: paymentData, mutate } = useSWR<Payment[]>(`${API_URL}/payment`);
+  const { data: paymentData, mutate } = useSWR<Payment[]>(
+    `${API_URL}/${API_URLS.PAYMENTS}`,
+  );
 
   const clearData = () => {
     setPayment(() => '');
@@ -151,9 +155,9 @@ function App() {
             size="md"
             key={paymentData?.length || ''}
             onChange={handleFileChange}
+            padding="1"
           />
         </FormControl>
-
         <Button
           isLoading={isSaved}
           onClick={onSave}
@@ -163,7 +167,7 @@ function App() {
         >
           Guardar
         </Button>
-        <TablePayments payments={paymentData} />
+        {paymentData?.length ? <TablePayments payments={paymentData} /> : null}
       </Box>
     </SimpleGrid>
   );

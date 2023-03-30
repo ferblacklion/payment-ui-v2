@@ -1,4 +1,4 @@
-import { API_URL } from '../constants';
+import { API_URL, API_URLS } from '../constants';
 import { Payment } from '../types';
 type SaveImage = {
   success: boolean;
@@ -9,7 +9,7 @@ export async function saveImage(file: File): Promise<SaveImage | null> {
   formData.append('file', file);
 
   try {
-    const result = await fetch(`${API_URL}/media/`, {
+    const result = await fetch(`${API_URL}/${API_URLS.MEDIA}`, {
       method: 'POST',
       body: formData,
       headers: {
@@ -39,7 +39,7 @@ export async function savePayment(
     formData.append('name', data.name || '');
     formData.append('person', data.person || '');
     if (file) formData.append('file', file);
-    const res = await fetch(`${API_URL}/payment`, {
+    const res = await fetch(`${API_URL}/${API_URLS.PAYMENTS}`, {
       method: 'POST',
       headers: {
         Authorization: 'Bearer 1234',
@@ -58,7 +58,7 @@ export async function savePayment(
 
 export async function updatePayment(id: string, image: string) {
   try {
-    await fetch(`${API_URL}/payment/${id}`, {
+    await fetch(`${API_URL}/${API_URLS.PAYMENTS}/${id}`, {
       method: 'PATCH',
       headers: {
         'Content-Type': 'application/json',

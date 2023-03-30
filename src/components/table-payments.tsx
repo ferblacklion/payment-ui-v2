@@ -24,7 +24,7 @@ export function TablePayments({ payments }: { payments?: Payment[] }) {
           {payments.map((p) => {
             let date = null;
             try {
-              date = format(new Date(p.datetime), 'MM/dd/yy');
+              date = format(new Date(p.datetime), 'PP');
             } catch {
               // do nothing
             }
@@ -37,7 +37,7 @@ export function TablePayments({ payments }: { payments?: Payment[] }) {
                 <Td>
                   {p.image ? (
                     <Link color="teal.500" isExternal href={p.image}>
-                      Image
+                      Imagen
                     </Link>
                   ) : (
                     'N/A'
