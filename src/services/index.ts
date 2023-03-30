@@ -39,13 +39,17 @@ export async function savePayment(
     formData.append('name', data.name || '');
     formData.append('person', data.person || '');
     if (file) formData.append('file', file);
-    return await fetch(`${API_URL}/payment`, {
+    const res = await fetch(`${API_URL}/payment`, {
       method: 'POST',
       headers: {
         Authorization: 'Bearer 1234',
       },
       body: formData,
-    }).then((r) => r.json());
+    });
+    if (res.ok) {
+      return res.json();
+    }
+    return null;
   } catch (error) {
     console.log('savePayment', error);
     return null;

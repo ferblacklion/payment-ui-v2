@@ -7,27 +7,18 @@ import {
   FormLabel,
   Heading,
   Input,
-  Link,
   Radio,
   RadioGroup,
   SimpleGrid,
   Stack,
-  Table,
-  TableContainer,
-  Tbody,
-  Td,
-  Th,
-  Thead,
-  Tr,
 } from '@chakra-ui/react';
 import { ChangeEvent, useState } from 'react';
 import useSWR from 'swr';
-import toDate from 'date-fns/toDate';
-import format from 'date-fns/format';
 import { API_URL, DEFAULT_PAYMENTS, DEFAULT_PERSONS } from './constants';
 import { Payment } from './types';
 import { savePayment } from './services';
 import { useToast } from '@chakra-ui/react';
+import { TablePayments } from './components/table-payments';
 
 function cleanName(value: string) {
   return value.toLowerCase().replace(' ', '-');
@@ -67,7 +58,18 @@ function App() {
         person: person,
       };
 
-      await savePayment(data, file);
+      const paymentSaved = await savePayment(data, file);
+
+      if (!paymentSaved) {
+        toast({
+          description: 'Error al enviar datos, intente luego!',
+          status: 'error',
+          duration: 9800,
+          isClosable: true,
+        });
+        clearData();
+        return;
+      }
 
       const newData = paymentData || [];
       const time = new Date().getTime();
@@ -161,35 +163,7 @@ function App() {
         >
           Guardar
         </Button>
-        {paymentData ? (
-          <TableContainer mt="10">
-            <Table variant="striped" colorScheme="teal" size="sm">
-              <Thead>
-                <Tr>
-                  <Th>Pagados</Th>
-                </Tr>
-              </Thead>
-              <Tbody>
-                {paymentData.map((p) => (
-                  <Tr key={p.id}>
-                    <Td>{p.name}</Td>
-                    <Td style={{ textTransform: 'capitalize' }}>{p.person}</Td>
-                    <Td>{format(toDate(p.datetime), 'MM/dd/yy')}</Td>
-                    <Td>
-                      {p.image ? (
-                        <Link color="teal.500" isExternal href={p.image}>
-                          Image
-                        </Link>
-                      ) : (
-                        'N/A'
-                      )}{' '}
-                    </Td>
-                  </Tr>
-                ))}
-              </Tbody>
-            </Table>
-          </TableContainer>
-        ) : null}
+        <TablePayments payments={paymentData} />
       </Box>
     </SimpleGrid>
   );
