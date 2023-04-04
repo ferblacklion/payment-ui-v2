@@ -17,6 +17,7 @@ export const DEFAULT_PAYMENTS: string[] = [
   'Comida Python',
   'IUSI Casa',
   'Cafe Casa',
+  'Parqueo CRV',
 ];
 
 export const fetcher = (url: string) => fetch(url).then((res) => res.json());
