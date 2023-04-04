@@ -12,7 +12,8 @@
     "plugin:testing-library/react",
     "plugin:jest-dom/recommended",
     "plugin:prettier/recommended",
-    "react-app"
+    "react-app",
+    "plugin:cypress/recommended"
   ],
   "parserOptions": {
     "ecmaFeatures": {
