@@ -20,7 +20,7 @@ export function TablePayments({ payments }: { payments?: Payment[] }) {
             <Th>Pagados</Th>
           </Tr>
         </Thead>
-        <Tbody>
+        <Tbody data-testid="table-body">
           {payments.map((p) => {
             let date = null;
             try {
@@ -36,7 +36,12 @@ export function TablePayments({ payments }: { payments?: Payment[] }) {
                 <Td>{date ? date : null}</Td>
                 <Td>
                   {p.image ? (
-                    <Link color="teal.500" isExternal href={p.image}>
+                    <Link
+                      title="Image"
+                      color="teal.500"
+                      isExternal
+                      href={p.image}
+                    >
                       Imagen
                     </Link>
                   ) : (

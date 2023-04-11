@@ -1,4 +1,3 @@
-/* eslint-disable testing-library/prefer-screen-queries */
 /// <reference types="cypress" />
 const paymentsMockData = [
   {
@@ -109,29 +108,43 @@ const paymentsMockData = [
   },
 ];
 describe('<app>', () => {
-  let saveButton = null;
   beforeEach(() => {
     cy.visit('/');
     cy.intercept('/v1/api/payments', paymentsMockData);
-    saveButton = cy.findByRole('button', { name: /Guardar/i });
   });
   it('should render without any errors', () => {
     cy.findByText(/gastos/i).should('exist');
-    saveButton.should('exist');
+    cy.getSaveButton().should('exist');
+    cy.findByTestId('table-body').children().should('have.length.at.least', 1);
+    cy.url().should('eq', `${Cypress.config().baseUrl}/`);
   });
 
   it('should display error message when click only in the payment', () => {
     cy.contains(/IUSI Casa/i).click();
-    cy.findByRole('button', { name: /Guardar/i }).click();
+    cy.getSaveButton().click();
     cy.findByText('Los datos no estan completos!').should('exist');
   });
   it('should display error message when click only in the person', () => {
     cy.contains(/Moi/i).click();
-    cy.findByRole('button', { name: /Guardar/i }).click();
+    cy.getSaveButton().click();
     cy.findByText('Los datos no estan completos!').should('exist');
   });
   it('should display error message if any data is not selected', () => {
-    saveButton.click();
+    cy.getSaveButton().click();
     cy.findByText('Los datos no estan completos!').should('exist');
+  });
+  it('should save a payment properly', () => {
+    cy.intercept('POST', `${Cypress.config().baseUrl}/v1/api/payments`, {
+      id: 'PTrZFxEeRdm9xbsGuDcX',
+      success: true,
+    });
+    cy.findByText(/IUSI Casa/i).click();
+    cy.contains(/Moi/i).click();
+    cy.getSaveButton().click();
+    cy.findByText(/Guardado/i).should('exist');
+  });
+  it('should open the image in a new window', () => {
+    cy.findAllByTitle(/Image/).should('have.length.at.least', 1);
+    cy.findAllByTitle(/Image/).first().should('have.attr', 'target');
   });
 });

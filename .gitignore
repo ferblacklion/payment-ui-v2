@@ -22,3 +22,6 @@ dist-ssr
 *.sw?
 package-lock.json
 .vercel
+
+cypress/videos
+cypress/screenshots

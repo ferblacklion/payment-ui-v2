@@ -36,3 +36,7 @@ import '@testing-library/cypress/add-commands';
 //     }
 //   }
 // }
+
+Cypress.Commands.add('getSaveButton', () => {
+  cy.findByRole('button', { name: /Guardar/i }).then((button) => button);
+});
