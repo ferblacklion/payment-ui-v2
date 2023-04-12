@@ -12,4 +12,7 @@ export default defineConfig({
   build: {
     minify: 'terser',
   },
+  preview: {
+    port: 3001,
+  },
 });

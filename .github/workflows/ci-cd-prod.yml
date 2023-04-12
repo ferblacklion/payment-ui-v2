@@ -2,11 +2,21 @@ name: Vercel Production Deployment
 env:
   VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
   VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+  CI: true
 on:
   push:
     branches:
       - main
 jobs:
+  e2e-run:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: e2e run
+        shell: bash
+        run: |
+          yarn install
+          yarn test:e2e
   Deploy-Production:
     runs-on: ubuntu-latest
     steps:
