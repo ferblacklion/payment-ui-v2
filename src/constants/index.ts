@@ -2,7 +2,7 @@ import { CONFIG } from '../config/envs';
 const API_VERSION = '/v1/api';
 export const API_URL = CONFIG.isDev
   ? `http://localhost:3000${API_VERSION}`
-  : `https://payment-api-v1-production.up.railway.app${API_VERSION}`;
+  : `https://dark-rose-squid-wear.cyclic.app${API_VERSION}`;
 
 export enum API_URLS {
   PAYMENTS = 'payments',
